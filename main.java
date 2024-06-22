@@ -7,10 +7,16 @@ import java.io.FileNotFoundException;
 public class main{
 
 
-    static String[] getMedidas(String medidas){
-      String[] medidasSeparadas = medidas.split(" ");
-      Arrays.sort(medidasSeparadas);
-        return medidasSeparadas;
+    static int[] getMeasures(String mesures){
+      String[] mesuresSeparadas = mesures.split(" ");
+      int[] mesuresNum = new int[mesuresSeparadas.length];
+      Arrays.sort(mesuresSeparadas);
+
+      for(int i = 0; i < mesuresNum.length; i++)
+      {
+        mesuresNum[i] = Integer.parseInt(mesuresSeparadas[i]);
+      }
+        return mesuresNum;
     }
 
     public static void main(String args[]) throws FileNotFoundException{
@@ -18,7 +24,7 @@ public class main{
 
         /*
         * 
-        String[] valores = getMedidas("225 889 888");
+        String[] valores = getMeasures("225 889 888");
         
         for(int i =0; i<valores.length; i++)
         {
@@ -26,10 +32,10 @@ public class main{
             }
             */
             
-        Digraph grafo = new Digraph();
+        Digraph digraph = new Digraph();
         File arq =  new File("casoPDF.txt");
         Scanner t = new Scanner(arq);
-
+        
         List<String> lines = new LinkedList<>();
         while(t.hasNextLine())
         {
@@ -37,39 +43,33 @@ public class main{
             lines.add(line);
         }
         t.close();
-
-       //System.out.println(lines);
-
-      
-
-        for(int i = 0; i < lines.size(); i++){
-            String[] measures = getMedidas(lines.get(i));
-
-            for(int j = 0; j < lines.size(); j++){
-                if(i !=j){
-                    String[] nextMeasures= getMedidas(lines.get(j));
-                    boolean result = false;
-                    for(int k = 0; k <measures.length; k++)
-                        if (Integer.parseInt(measures[k]) >= Integer.parseInt(nextMeasures[k])) {
-                            result = false;
-                        }
-                        
-                        if(result){
-                            
-                            grafo.addEdge(lines.get(i),lines.get(i+1));
-                        }
-                    }    
-            /*
-            for (int j = 0; j < measures.length; j++) {
-                if(Integer.parseInt(measures[j]) >= Integer.parseInt(nextMeasures[j]))
-                {
-                    grafo.addEdge(measures[j], nextMeasures[j]);
-                }
-            }
-            */
+        
+        
+        //System.out.println(lines);
+        
+        for (int i = 0; i < lines.size(); i++) {
+            int[] measures = getMeasures(lines.get(i));
             
+            for (int j = 0; j < lines.size(); j++) {
+                if (i != j) { 
+                    int[] nextMesuares = getMeasures(lines.get(j));
+                    boolean result = true;
+                    for (int k = 0; k < measures.length; k++) {
+                        if (measures[k] >= nextMesuares[k]) { 
+                            result = false;
+                            break;
+                        }
+                    }
+                    if (result) {
+                        digraph.addEdge(lines.get(i), lines.get(j)); 
+                    }
+                }
+                
             }
-             System.out.println(grafo.toDot());
         }
-    }
+        BFS bfs = new BFS(digraph, lines.get(1));
+        System.out.println(digraph.toDot());
+        System.out.println("O maior caminho é " + bfs.biggerPath());
+    
+}
 }
