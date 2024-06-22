@@ -9,9 +9,7 @@ public class main{
 
     static String[] getMedidas(String medidas){
       String[] medidasSeparadas = medidas.split(" ");
-
       Arrays.sort(medidasSeparadas);
-
         return medidasSeparadas;
     }
 
@@ -42,20 +40,25 @@ public class main{
 
        //System.out.println(lines);
 
-       boolean result = false;
+      
 
-        for(int i = 0; i < lines.size() - 1; i++){
+        for(int i = 0; i < lines.size(); i++){
             String[] measures = getMedidas(lines.get(i));
-            String[] nextMeasures= getMedidas(lines.get(i+1));
 
-                for(int k = 0; k <measures.length; k++)
-                    if (Integer.parseInt(measures[k]) <= Integer.parseInt(nextMeasures[k])) {
-                        result = true;
-                    }
-                    
-            if(result == true)
-                grafo.addEdge(lines.get(i),lines.get(i+1));
-                result = false;
+            for(int j = 0; j < lines.size(); j++){
+                if(i !=j){
+                    String[] nextMeasures= getMedidas(lines.get(j));
+                    boolean result = false;
+                    for(int k = 0; k <measures.length; k++)
+                        if (Integer.parseInt(measures[k]) >= Integer.parseInt(nextMeasures[k])) {
+                            result = false;
+                        }
+                        
+                        if(result){
+                            
+                            grafo.addEdge(lines.get(i),lines.get(i+1));
+                        }
+                    }    
             /*
             for (int j = 0; j < measures.length; j++) {
                 if(Integer.parseInt(measures[j]) >= Integer.parseInt(nextMeasures[j]))
@@ -65,6 +68,8 @@ public class main{
             }
             */
             
+            }
+             System.out.println(grafo.toDot());
         }
-        System.out.println(grafo.toDot());
-    }}
+    }
+}
