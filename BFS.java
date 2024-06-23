@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -44,31 +45,39 @@ public class BFS {
 		return path;
 	}
 
-	int biggerPath(){
+
+	int biggerPath(Digraph g){
 		int maxValue = 0;
-		for (int value : distTo.values()) {
-			if(maxValue < value)
+		for (String valueVertices : g.getVerts()) {
+			int distance = distTo(valueVertices);
+			System.out.println("Vertex: " + valueVertices + ", Distance: " + distance);
+			if(maxValue < distTo(valueVertices))
 			{
-				maxValue = value;
+				maxValue = distTo(valueVertices);
 			}
 		}
 		return maxValue;	
 	}
+
 	private void bfs(Digraph g, String s) {
 		LinkedList<String> fila = new LinkedList<>();
 		fila.add(s);
 		marked.add(s);
-		distTo.put(s,0);
-		while(!fila.isEmpty()) {
+		distTo.put(s, 0);
+		System.out.println("Starting BFS from: " + s); 
+		while (!fila.isEmpty()) {
 			s = fila.removeFirst();
+			System.out.println("Visiting: " + s); 
 			for (String w : g.getAdj(s)) {
 				if (!marked.contains(w)) {
 					fila.add(w);
 					marked.add(w);
 					edgeTo.put(w, s);
-					distTo.put(w, distTo.get(s)+1);
+					distTo.put(w, distTo.get(s) + 1);
+					System.out.println("Marked: " + w + " with distance: " + distTo.get(w)); 
 				}
-			}	
+			}
 		}
 	}
+	
 }

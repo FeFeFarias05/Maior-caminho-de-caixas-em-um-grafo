@@ -1,8 +1,12 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.Set;
 
 public class Digraph  {
@@ -21,14 +25,42 @@ public class Digraph  {
   }
 
   public Digraph(String filename) {
-    this();
-    In in = new In(filename);
-    String line;
-    while ((line = in.readLine()) != null) {
-      String[] edge = line.split(" ");
-      addEdge(edge[0], edge[1]);
-    }
-    in.close();
+   this();
+        try {
+            File file = new File(filename);
+            Scanner t = new Scanner(file);
+
+            List<String> lines = new LinkedList<>();
+            while (t.hasNextLine()) {
+                String line = t.nextLine();
+                if (!line.isEmpty()) {
+                    lines.add(line); 
+                }
+            }
+            for (int i = 0; i < lines.size(); i++) {
+                int[] measures = getMeasures(lines.get(i));
+
+                for (int j = 0; j < lines.size(); j++) {
+                    if (i != j) {
+                        int[] nextMeasures = getMeasures(lines.get(j));
+                        boolean result = true;
+                        for (int k = 0; k < measures.length; k++) {
+                            if (measures[k] >= nextMeasures[k]) {
+                                result = false;
+                                break;
+                            }
+                        }
+                        if (result) {
+                            addEdge(lines.get(i), lines.get(j)); // Adiciona a aresta no grafo
+                        }
+                    }
+                }
+            }
+
+            t.close();
+          } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
   }
 
     // Adiciona um vértice adjacente a outro, criando a lista
@@ -42,6 +74,18 @@ public class Digraph  {
     totalEdges++;
     return list;
   }
+
+   int[] getMeasures(String mesures){
+      String[] mesuresSeparadas = mesures.split(" ");
+      int[] mesuresNum = new int[mesuresSeparadas.length];
+      Arrays.sort(mesuresSeparadas);
+
+      for(int i = 0; i < mesuresNum.length; i++)
+      {
+        mesuresNum[i] = Integer.parseInt(mesuresSeparadas[i]);
+      }
+        return mesuresNum;
+    }
 
   public void addEdge(String v, String w) {
     addToList(v, w);

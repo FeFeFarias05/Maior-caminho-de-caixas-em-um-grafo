@@ -32,13 +32,15 @@ public class main{
             }
             */
             
-        Digraph digraph = new Digraph();
-        File arq =  new File("casoPDF.txt");
-        Scanner t = new Scanner(arq);
-        
-        List<String> lines = new LinkedList<>();
-        while(t.hasNextLine())
-        {
+        Digraph digraph = new Digraph("casoPDF.txt");
+        /* 
+         * 
+         File arq =  new File("casoPDF.txt");
+         Scanner t = new Scanner(arq);
+         
+         List<String> lines = new LinkedList<>();
+         while(t.hasNextLine())
+         {
             String line = t.nextLine();
             lines.add(line);
         }
@@ -67,9 +69,11 @@ public class main{
                 
             }
         }
-        BFS bfs = new BFS(digraph, lines.get(1));
+        */
+        BFS bfs = new BFS(digraph, "0");
         System.out.println(digraph.toDot());
-        System.out.println("O maior caminho é " + bfs.biggerPath());
-    
-}
+        System.out.println(digraph.getAdj("5"));
+        System.out.println("O maior caminho é " + bfs.biggerPath(digraph));
+        
+    }
 }
