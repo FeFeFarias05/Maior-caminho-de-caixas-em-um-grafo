@@ -14,7 +14,6 @@ public class Digraph  {
   protected static final String NEWLINE = System.getProperty("line.separator");
 
   protected Map<String, List<String>> digraph;
-  protected Map<String, Integer> vertexVolume;
   protected Set<String> vertices;
   protected int totalVertices;
   protected int totalEdges;
@@ -22,49 +21,46 @@ public class Digraph  {
   public Digraph() {
     digraph = new HashMap<>();
     vertices = new HashSet<>();
-    vertexVolume = new HashMap<>();
     totalVertices = totalEdges = 0;
   }
 
   public Digraph(String filename) {
-   this();
-   vertexVolume = new HashMap<>();
-        try {
-            File file = new File(filename);
-            Scanner t = new Scanner(file);
+    this();
+    try {
+        File file = new File(filename);
+        Scanner scanner = new Scanner(file);
 
-            List<String> lines = new LinkedList<>();
-            while (t.hasNextLine()) {
-                String line = t.nextLine();
-                if (!line.isEmpty()) {
-                    lines.add(line); 
-                }
+        Map<String, int[]> lineMeasures = new HashMap<>();
+        while (scanner.hasNextLine()) {
+            String line = scanner.nextLine();
+            if (!line.isEmpty()) {
+                int[] measures = getMeasures(line);
+                lineMeasures.put(line, measures);
             }
-            for (int i = 0; i < lines.size(); i++) {
-                int[] measures = getMeasures(lines.get(i));
+        }
 
-                for (int j = 0; j < lines.size(); j++) {
-                    if (i != j) {
-                        int[] nextMeasures = getMeasures(lines.get(j));
-                        boolean result = true;
-                        for (int k = 0; k < measures.length; k++) {
-                            if (measures[k] >= nextMeasures[k]) {
-                                result = false;
-                                break;
-                            }
+        for (Map.Entry<String, int[]> entryI : lineMeasures.entrySet()) {
+            for (Map.Entry<String, int[]> entryJ : lineMeasures.entrySet()) {
+                if (!entryI.getKey().equals(entryJ.getKey())) {
+                    boolean result = true;
+                    for (int k = 0; k < entryI.getValue().length; k++) {
+                        if (entryI.getValue()[k] >= entryJ.getValue()[k]) {
+                            result = false;
+                            break;
                         }
-                        if (result) {
-                            addEdge(lines.get(i), lines.get(j)); // Adiciona a aresta no grafo
-                        }
+                    }
+                    if (result) {
+                        addEdge(entryI.getKey(), entryJ.getKey()); // Adiciona a aresta no grafo
                     }
                 }
             }
-
-            t.close();
-          } catch (FileNotFoundException e) {
-            e.printStackTrace();
         }
-  }
+
+        scanner.close();
+    } catch (FileNotFoundException e) {
+        e.printStackTrace();
+    }
+}
 
     // Adiciona um vértice adjacente a outro, criando a lista
   // de adjacências caso ainda não exista no dicionário
@@ -78,17 +74,17 @@ public class Digraph  {
     return list;
   }
 
-   int[] getMeasures(String mesures){
-      String[] mesuresSeparadas = mesures.split(" ");
-      int[] mesuresNum = new int[mesuresSeparadas.length];
-      Arrays.sort(mesuresSeparadas);
+  int[] getMeasures(String measures) {
+    String[] separatedMeasures = measures.split(" ");
+    int[] measuresNum = new int[separatedMeasures.length];
 
-      for(int i = 0; i < mesuresNum.length; i++)
-      {
-        mesuresNum[i] = Integer.parseInt(mesuresSeparadas[i]);
-      }
-        return mesuresNum;
+    for (int i = 0; i < separatedMeasures.length; i++) {
+        measuresNum[i] = Integer.parseInt(separatedMeasures[i]);
     }
+
+    Arrays.sort(measuresNum);
+    return measuresNum;
+}
 
   public void addEdge(String v, String w) {
     addToList(v, w);
@@ -102,10 +98,6 @@ public class Digraph  {
     }
   }
 
-  String getFirstVertex() {
-    return vertices.iterator().next();
-  }
-  
   public Iterable<String> getAdj(String v) {
     List<String> res = digraph.get(v);
     if (res == null)
@@ -125,31 +117,39 @@ public class Digraph  {
     return totalEdges;
   }
 
-  
 
-  public int countVerticesInLargestPath() {
-    // Inicializações
-    int maxPathLength = 0;
+  public int biggerPath() {
+    int biggerPath = 0;
+    Map<String, Integer> length = new HashMap<>(); 
     for (String vertex : getVerts()) {
         HashSet<String> visited = new HashSet<>();
-        int pathLength = dfs(vertex, visited);
-        maxPathLength = Math.max(maxPathLength, pathLength);
+        int pathLength = findLargestPath(vertex, visited, length);
+        biggerPath = Math.max(biggerPath, pathLength);
     }
-    return maxPathLength + 1;
+    return biggerPath ; 
 }
 
-private int dfs(String vertex, Set<String> visited) {
-    visited.add(vertex);
-    int pathLength = 1; // Conta o vértice atual
+  private int findLargestPath(String vertex, Set<String> visited, Map<String, Integer> length) {
+      if (length.containsKey(vertex)) {
+          return length.get(vertex); 
+      }
+      visited.add(vertex);
+      int pathLength = 1; 
 
-    for (String neighbor : getAdj(vertex)) {
-        if (!visited.contains(neighbor)) {
-            pathLength = Math.max(pathLength, 1 + dfs(neighbor, new HashSet<>(visited)));
-        }
-    }
+      for (String adjacent : getAdj(vertex)) {
+          if (!visited.contains(adjacent)) {
+              visited.add(adjacent); 
+              pathLength = Math.max(pathLength, 1 + findLargestPath(adjacent, visited, length));
+              visited.remove(adjacent); 
+          }
+      }
 
-    return pathLength;
-}
+      length.put(vertex, pathLength); 
+      return pathLength;
+  }
+
+   
+
   public String toDot() {
     StringBuilder sb = new StringBuilder();
     sb.append("digraph {" + NEWLINE);
