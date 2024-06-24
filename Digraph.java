@@ -14,6 +14,7 @@ public class Digraph  {
   protected static final String NEWLINE = System.getProperty("line.separator");
 
   protected Map<String, List<String>> digraph;
+  protected Map<String, Integer> vertexVolume;
   protected Set<String> vertices;
   protected int totalVertices;
   protected int totalEdges;
@@ -21,11 +22,13 @@ public class Digraph  {
   public Digraph() {
     digraph = new HashMap<>();
     vertices = new HashSet<>();
+    vertexVolume = new HashMap<>();
     totalVertices = totalEdges = 0;
   }
 
   public Digraph(String filename) {
    this();
+   vertexVolume = new HashMap<>();
         try {
             File file = new File(filename);
             Scanner t = new Scanner(file);
@@ -99,6 +102,9 @@ public class Digraph  {
     }
   }
 
+  String getFirstVertex() {
+    return vertices.iterator().next();
+  }
   
   public Iterable<String> getAdj(String v) {
     List<String> res = digraph.get(v);
@@ -119,7 +125,31 @@ public class Digraph  {
     return totalEdges;
   }
 
+  
 
+  public int countVerticesInLargestPath() {
+    // Inicializações
+    int maxPathLength = 0;
+    for (String vertex : getVerts()) {
+        HashSet<String> visited = new HashSet<>();
+        int pathLength = dfs(vertex, visited);
+        maxPathLength = Math.max(maxPathLength, pathLength);
+    }
+    return maxPathLength + 1;
+}
+
+private int dfs(String vertex, Set<String> visited) {
+    visited.add(vertex);
+    int pathLength = 1; // Conta o vértice atual
+
+    for (String neighbor : getAdj(vertex)) {
+        if (!visited.contains(neighbor)) {
+            pathLength = Math.max(pathLength, 1 + dfs(neighbor, new HashSet<>(visited)));
+        }
+    }
+
+    return pathLength;
+}
   public String toDot() {
     StringBuilder sb = new StringBuilder();
     sb.append("digraph {" + NEWLINE);
