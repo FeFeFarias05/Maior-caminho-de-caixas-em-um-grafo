@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
 
-public class Digraph  {
+public class Box  {
 
   protected static final String NEWLINE = System.getProperty("line.separator");
 
@@ -18,13 +18,13 @@ public class Digraph  {
   protected int totalVertices;
   protected int totalEdges;
 
-  public Digraph() {
+  public Box() {
     digraph = new HashMap<>();
     vertices = new HashSet<>();
     totalVertices = totalEdges = 0;
   }
 
-  public Digraph(String filename) {
+  public Box(String filename) {
     this();
     try {
         File file = new File(filename);
