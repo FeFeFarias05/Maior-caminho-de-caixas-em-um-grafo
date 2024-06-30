@@ -10,6 +10,7 @@ public class App {
 
         long end = System.nanoTime();
         long dur = end - start;
-        System.out.println("Tempo de duração do teste: "+dur);
+        System.out.println("Tempo de duração do teste em nanossegundos: " + dur);
+        System.out.println("Tempo de duração do teste em segundos: " + (dur / 1_000_000_000.0));
     }
 }

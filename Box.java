@@ -39,18 +39,18 @@ public class Box  {
             }
         }
 
-        for (Map.Entry<String, int[]> entryI : lineMeasures.entrySet()) {
-            for (Map.Entry<String, int[]> entryJ : lineMeasures.entrySet()) {
-                if (!entryI.getKey().equals(entryJ.getKey())) {
+        for (Map.Entry<String, int[]> boxMeasuresOne : lineMeasures.entrySet()) {
+            for (Map.Entry<String, int[]> boxMesuresTwo : lineMeasures.entrySet()) {
+                if (!boxMeasuresOne.getKey().equals(boxMesuresTwo.getKey())) {
                     boolean result = true;
-                    for (int k = 0; k < entryI.getValue().length; k++) {
-                        if (entryI.getValue()[k] >= entryJ.getValue()[k]) {
+                    for (int k = 0; k < boxMeasuresOne.getValue().length; k++) {
+                        if (boxMeasuresOne.getValue()[k] >= boxMesuresTwo.getValue()[k]) {
                             result = false;
                             break;
                         }
                     }
                     if (result) {
-                        addEdge(entryI.getKey(), entryJ.getKey()); // Adiciona a aresta no grafo
+                        addEdge(boxMeasuresOne.getKey(), boxMesuresTwo.getKey()); // Adiciona a aresta no grafo
                     }
                 }
             }
