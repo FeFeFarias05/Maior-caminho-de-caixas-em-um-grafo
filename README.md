@@ -56,9 +56,9 @@ public Box(String filename) {
         e.printStackTrace();
     }
 }
-
+``` 
 Como o projeto pedia para encontrar a maior sequência de caixa, fiz um caminhamento baseado no DFS em que enquanto caminhava, já analisava qual era o maior caminho. O algoritmo é recursivo e por tanto tem o público e o private.
-
+``` 
   public int biggerPath() {
     int biggerPath = 0;
     Map<String, Integer> length = new HashMap<>(); 
