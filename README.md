@@ -1,9 +1,9 @@
 Este projeto contém o arquivo Box.java no qual contém todo a implementação do projeto, o app.java que chama os métodos de Box, a In.java e 12 arquivos .txt para teste, no qual cada um contém um grafo com quantidades diferentes de vértices.
 O projeto foi feito baseado no seguinte contexto:
 Cada vértice representa uma caixa que possui 3 dimensões, no qual não se sabe qual a ordem que cada valor representa, ou seja, não se sabe se a primeira medida é a altura, comprimento ou largura e assim vice-versa. O objetivo desse projeto é achar a maior sequência de caixas que podem ser colocadas uma dentro da outra, fornecendo como informação final o comprimento da sequência mais longa de caixas que cabem uma dentro da outra.
-*IMplementação*
+*Implementação*
 Para implementação foi criada uma função que pegava o valor de cada vértice que estava em apenas uma string e dividia colocando em uma lista já convertendo para inteiro e colocando em ordem. 
-
+``` 
 int[] getMeasures(String measures) {
     String[] separatedMeasures = measures.split(" ");
     int[] measuresNum = new int[separatedMeasures.length];
@@ -15,10 +15,10 @@ int[] getMeasures(String measures) {
     Arrays.sort(measuresNum);
     return measuresNum;
 }
-
+``` 
 Para realizar a comparação, foi utilizada a seguinte lógica: como não se conhece o significado exato de cada valor, se qualquer valor do vértice que está sendo comparado for maior do que qualquer valor do próximo vértice, já se pode concluir que ele não caberá dentro da caixa a ser comparada.
 A implementação desse lógica foi feita diretamente no contrutor da classe Box
-
+``` 
 public Box(String filename) {
     this();
     try {
@@ -88,5 +88,5 @@ Como o projeto pedia para encontrar a maior sequência de caixa, fiz um caminham
       length.put(vertex, pathLength); 
       return pathLength;
   }
-
+``` 
 Para conseguir ter uma visualização melhor do grafo construído, utilizei a função toDot que gera um algoritmo, no qual é colado no site Graphviz Online que constroí uma grafo.
